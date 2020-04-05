@@ -7,16 +7,6 @@
 <!-- Page content goes here -->
 <div class="container">
     <p>Bienvenue dans votre profil. que les utilisateurs authentifiés peuvent voir cette page.</p>
-    <table>
-        <tr>
-            <td>Username</td>
-            <td><span sec:authentication="principal.getUsername()"></span></td>
-        </tr>
-        <tr>
-            <td>Authorities</td>
-            <td><span sec:authentication="principal.getAuthorities()"></span></td>
-        </tr>
-    </table>
 </div>
 </body>
 </html>

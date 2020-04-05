@@ -2,6 +2,7 @@ package fr.univ.orleans.projet.authentification.controller;
 
 import fr.univ.orleans.projet.authentification.modele.Users;
 import fr.univ.orleans.projet.authentification.repository.UsersRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -10,6 +11,7 @@ import java.util.List;
 @Controller
 public class AuthentificationController {
 
+    @Autowired
     private UsersRepository usersRepository;
 
     public AuthentificationController(UsersRepository usersRepository) {
