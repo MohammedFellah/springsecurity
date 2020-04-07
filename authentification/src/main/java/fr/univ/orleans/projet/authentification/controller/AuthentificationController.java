@@ -5,10 +5,12 @@ import fr.univ.orleans.projet.authentification.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
 @Controller
+@RequestMapping("/auth")
 public class AuthentificationController {
 
     @Autowired
@@ -18,6 +20,8 @@ public class AuthentificationController {
         this.usersRepository = usersRepository;
     }
 
+    @GetMapping("/")
+    public String auth(){ return "index"; }
     @GetMapping("/accueil")
     public String helloEveryone() { return "index"; }
 
@@ -44,5 +48,6 @@ public class AuthentificationController {
 
     @GetMapping("/admin/users")
     public List<Users> allUsers(){ return this.usersRepository.findAll(); }
+
 
 }

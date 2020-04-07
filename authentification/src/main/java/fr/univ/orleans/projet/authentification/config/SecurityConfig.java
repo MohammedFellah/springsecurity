@@ -34,19 +34,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.csrf().disable();
         http.authorizeRequests()
-                .antMatchers("/accueil").permitAll()
-                .antMatchers("/profil/**").authenticated()
-                .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/billeterie/**").hasAnyRole("ADMIN","USER")
-                .antMatchers("/admin/users/**").hasRole("ADMIN")
+                .antMatchers("/auth").permitAll()
+                .antMatchers("/auth/accueil").permitAll()
+                .antMatchers("/auth/profil/**").authenticated()
+                .antMatchers("/auth/admin/**").hasRole("ADMIN")
+                .antMatchers("/auth/billeterie/**").hasAnyRole("ADMIN","USER")
+                .antMatchers("/auth/admin/users/**").hasRole("ADMIN")
                 .and()
                 .formLogin()
-                .loginProcessingUrl("/signin")
-                .loginPage("/connexion").permitAll()
+                .loginProcessingUrl("/auth/signin")
+                .loginPage("/auth/connexion").permitAll()
                 .usernameParameter("txtUsername")
                 .passwordParameter("txtPassword")
                 .and()
-                .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/deconnexion")
+                .logout().logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout")).logoutSuccessUrl("/auth/deconnexion")
                 .and()
                 .rememberMe().tokenValiditySeconds(2592000).key("mySecret!").rememberMeParameter("checkRememberMe");
 

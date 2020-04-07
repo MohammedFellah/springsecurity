@@ -20,23 +20,23 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="#" th:href="@{~/accueil}"><i class="fa fa-home"></i> Accueil</a>
+                    <a class="nav-link" href="#" th:href="@{~/auth/accueil}"><i class="fa fa-home"></i> Accueil</a>
                 </li>
                 <li sec:authorize="isAuthenticated()" class="nav-item">
-                    <a class="nav-link" href="#" th:href="@{~/profil}">Profil</a>
+                    <a class="nav-link" href="#" th:href="@{~/auth/profil}">Profil</a>
                 </li>
                 <li sec:authorize="hasRole('ADMIN')" class="nav-item">
-                    <a class="nav-link" href="#" th:href="@{~/admin}">Admin</a>
+                    <a class="nav-link" href="#" th:href="@{~/auth/admin}">Admin</a>
                 </li>
                 <li sec:authorize="hasAnyRole('USER','ADMIN')" class="nav-item">
-                    <a class="nav-link" href="#" th:href="@{~/billeterie}">Billeterie</a>
+                    <a class="nav-link" href="#" th:href="@{~/auth/billeterie}">Billeterie</a>
                 </li>
             </ul>
-            <form class="form-inline my-2 my-lg-0" form-method="post" th:action="@{/logout}">
+            <form class="form-inline my-2 my-lg-0" form-method="post" th:action="@{/auth/logout}">
                 <button sec:authorize="isAuthenticated()" class="btn btn-outline-danger my-2 my-sm-0 btn-sm" type="submit">Déconnexion</button>
             </form>
-            <form class="form-inline my-2 my-lg-0" form-method="post" th:action="@{/connexion}">
-                <button sec:authorize="isAnonymous()" th:href="@{~/connexion}" class="btn btn-outline-info my-2 my-sm-0 btn-sm" type="submit">Connexion</button>
+            <form class="form-inline my-2 my-lg-0" form-method="post" th:action="@{/auth/connexion}">
+                <button sec:authorize="isAnonymous()" th:href="@{~/auth/connexion}" class="btn btn-outline-info my-2 my-sm-0 btn-sm" type="submit">Connexion</button>
             </form>
         </div>
     </nav>
