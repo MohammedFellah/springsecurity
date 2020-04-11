@@ -7,11 +7,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-public class MyUserDetails extends Users implements UserDetails {
+public class MyUserDetails extends User implements UserDetails {
 
 
-    public MyUserDetails(final Users users) {
-        super(users);
+    public MyUserDetails(final User user) {
+        super(user);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class MyUserDetails extends Users implements UserDetails {
 
     @Override
     public String getUsername() {
-        return super.getUserName();
+        return super.getLogin();
     }
 
     @Override

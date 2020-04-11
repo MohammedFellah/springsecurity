@@ -1,7 +1,5 @@
 package fr.univ.orleans.projet.authentification.config;
 
-import fr.univ.orleans.projet.authentification.repository.UsersRepository;
-import fr.univ.orleans.projet.authentification.service.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -35,22 +33,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http.authorizeRequests()
                 .antMatchers("/auth").permitAll()
-                .antMatchers("/auth/accueil").permitAll()
-                .antMatchers("/auth/profil/**").authenticated()
-                .antMatchers("/auth/admin/**").hasRole("ADMIN")
-                .antMatchers("/auth/billeterie/**").hasAnyRole("ADMIN","USER")
-                .antMatchers("/auth/admin/users/**").hasRole("ADMIN")
-                .and()
-                .formLogin()
-                .loginProcessingUrl("/auth/signin")
-                .loginPage("/auth/connexion").permitAll()
-                .usernameParameter("txtUsername")
-                .passwordParameter("txtPassword")
-                .and()
-                .logout().logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout")).logoutSuccessUrl("/auth/deconnexion")
-                .and()
-                .rememberMe().tokenValiditySeconds(2592000).key("mySecret!").rememberMeParameter("checkRememberMe");
-
+                .antMatchers("/auth/users/**").hasRole("ADMIN")
+                .antMatchers("/auth/inscription").permitAll()
+                .antMatchers("/auth/connexion").permitAll()
+                .anyRequest().permitAll();
     }
 
     private PasswordEncoder getPasswordEncoder() {
@@ -66,4 +52,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             }
         };
     }
+
 }

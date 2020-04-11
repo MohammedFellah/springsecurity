@@ -1,53 +1,90 @@
 package fr.univ.orleans.projet.authentification.controller;
 
-import fr.univ.orleans.projet.authentification.modele.Users;
-import fr.univ.orleans.projet.authentification.repository.UsersRepository;
+import fr.univ.orleans.projet.authentification.exception.UtilisateurDejàExistantException;
+import fr.univ.orleans.projet.authentification.modele.User;
+import fr.univ.orleans.projet.authentification.repository.UserRepository;
+import fr.univ.orleans.projet.authentification.service.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/auth")
 public class AuthentificationController {
 
     @Autowired
-    private UsersRepository usersRepository;
+    private UserRepository userRepository;
+    @Autowired
+    private MyUserDetailsService myUserDetailsService;
 
-    public AuthentificationController(UsersRepository usersRepository) {
-        this.usersRepository = usersRepository;
+    public AuthentificationController(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
+    /**
+     * Page d'accueil
+     * @return
+     */
     @GetMapping("/")
-    public String auth(){ return "index"; }
-    @GetMapping("/accueil")
-    public String helloEveryone() { return "index"; }
-
-    @GetMapping("/connexion")
-    public String connexion(){ return "connexion"; }
-
-    @GetMapping("/deconnexion")
-    public String deconnexion(){ return "deconnexion"; }
-
-    @GetMapping("/admin")
-    public String helloAdmin() {
-        return "admin/index";
+    public ResponseEntity<String> accueil(){
+        return ResponseEntity.ok().body("bienvenue au mobe");
     }
 
-    @GetMapping("/profil")
-    public String voirProfil() {
-        return "profil/index";
+    /**
+     *  Afficher tous les utilisateurs
+     * @return
+     */
+    @GetMapping("/users")
+    public ResponseEntity<Iterable<User>> getUtilisateurs(){
+        Iterable<User> users = myUserDetailsService.getAllUsers();
+        return ResponseEntity.ok().body(users);
     }
 
-    @GetMapping("/billeterie")
-    public String accessBilleterie() {
-        return "billeterie/index";
+    /**
+     * Inscription d'un nouvel utilisateur
+     * @param user
+     * @return
+     * @throws UtilisateurDejàExistantException
+     */
+    @PostMapping("/inscription")
+    public ResponseEntity<User> inscription(@RequestBody User user) throws UtilisateurDejàExistantException {
+        return ResponseEntity.ok().body(this.myUserDetailsService.createUser(user));
+
     }
 
-    @GetMapping("/admin/users")
-    public List<Users> allUsers(){ return this.usersRepository.findAll(); }
+    /**
+     * Rechercher un utilisateur par son login
+     * @param login
+     * @return
+     */
+    @GetMapping("/users/{login}")
+    public ResponseEntity<Optional<User>> getUtilisateurByLogin(@PathVariable("login") String login){
+      Optional<User> user = myUserDetailsService.rechercherUser(login);
+       return ResponseEntity.ok().body(user);
+    }
 
+    /**
+     * Supprimer un utilisateur à partir de son ID
+     * @param idUser
+     */
+    @DeleteMapping("/users/{idUser}")
+    public ResponseEntity<String> supprimerUserById(@PathVariable("idUser") int idUser) {
+        try {
+            myUserDetailsService.supprimerUser(idUser);
+        }catch (NoSuchElementException | IllegalArgumentException | EmptyResultDataAccessException e){
+        }
+        return ResponseEntity.ok().body("L'utilisateur avec ID = "+idUser+" a été supprimé");
+    }
+
+    @PostMapping("/connexion")
+    public String connexion(@RequestBody String login){
+        myUserDetailsService.loadUserByUsername(login);
+        return "vous etes bien connecté + "+login;
+    }
 
 }

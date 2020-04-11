@@ -2,11 +2,12 @@ package fr.univ.orleans.projet.authentification.modele;
 
 
 import javax.persistence.*;
+import java.util.Optional;
 import java.util.Set;
 
 @Entity
 @Table(name = "user")
-public class Users {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -14,24 +15,24 @@ public class Users {
     private int id;
 
     @Column(name = "login")
-    private String userName;
+    private String login;
 
     @Column(name = "password")
     private String password;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 
-    public Users() {
+    public User() {
     }
 
-    public Users(Users users){
+    public User(User user){
 
-        this.id=users.getId();
-        this.userName=users.getUserName();
-        this.password=users.getPassword();
-        this.roles=users.getRoles();
+        this.id= user.getId();
+        this.login= user.getLogin();
+        this.password= user.getPassword();
+        this.roles= user.getRoles();
     }
 
     public int getId() {
@@ -42,10 +43,10 @@ public class Users {
         this.id = id;
     }
 
-    public String getUserName() { return userName; }
+    public String getLogin() { return login; }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setLogin(String login) {
+        this.login = login;
     }
 
     public String getPassword() {
