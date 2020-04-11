@@ -2,6 +2,7 @@ package fr.univ.orleans.projet.authentification.modele;
 
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -10,7 +11,7 @@ import java.util.Set;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private int id;
 
@@ -20,19 +21,16 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles;
+    private Set<Role> roles = new HashSet<>();
 
     public User() {
     }
 
-    public User(User user){
-
-        this.id= user.getId();
-        this.login= user.getLogin();
-        this.password= user.getPassword();
-        this.roles= user.getRoles();
+    public User(String login, String password) {
+        this.login = login;
+        this.password = password;
     }
 
     public int getId() {

@@ -2,20 +2,16 @@ package fr.univ.orleans.projet.authentification.service;
 
 import fr.univ.orleans.projet.authentification.exception.UtilisateurDejàExistantException;
 import fr.univ.orleans.projet.authentification.exception.UtilisateurIntrouvableException;
-import fr.univ.orleans.projet.authentification.modele.MyUserDetails;
-import fr.univ.orleans.projet.authentification.modele.Role;
 import fr.univ.orleans.projet.authentification.modele.User;
-import fr.univ.orleans.projet.authentification.repository.RoleRepository;
 import fr.univ.orleans.projet.authentification.repository.UserRepository;
 import org.apache.commons.collections4.IteratorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.*;
 
 @Service
@@ -25,14 +21,12 @@ public class MyUserDetailsService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private RoleRepository roleRepository;
+    private static final String[] ROLES_ADMIN = {"USER","ADMIN"};
+    private static final String[] ROLES_USER = {"USER"};
 
-
     @Autowired
-    public MyUserDetailsService(UserRepository userRepository, RoleRepository roleRepository) {
+    public MyUserDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
     }
 
     /**
@@ -41,15 +35,15 @@ public class MyUserDetailsService implements UserDetailsService {
      * @return
      * @throws UsernameNotFoundException
      */
-
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        Optional<User> optionalUsers = userRepository.findByLogin(login);
-        optionalUsers
-                .orElseThrow(() -> new UsernameNotFoundException(login +"Utilisateur Introuvable!"));
-        return optionalUsers
-                .map(MyUserDetails::new).get();
+        User user = userRepository.findByLogin(login)
+                .orElseThrow(() ->
+                        new UsernameNotFoundException("L'utilisateur : ** " + login + "** est introuvable !!")
+                );
 
+        return MyUserDetails.build(user);
     }
 
     /**
@@ -90,13 +84,7 @@ public class MyUserDetailsService implements UserDetailsService {
         return userRepository.findByLogin(login);
     }
 
-    /**
-     * Afficher tous les roles
-     * @return
-     */
-    public Collection<Role> getAllRoles(){
-        return IteratorUtils.toList(this.roleRepository.findAll().iterator());
-    }
+
 
     public UserRepository getUserRepository() {
         return userRepository;
@@ -106,11 +94,4 @@ public class MyUserDetailsService implements UserDetailsService {
         this.userRepository = userRepository;
     }
 
-    public RoleRepository getRoleRepository() {
-        return roleRepository;
-    }
-
-    public void setRoleRepository(RoleRepository roleRepository) {
-        this.roleRepository = roleRepository;
-    }
 }

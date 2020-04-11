@@ -1,5 +1,7 @@
 package fr.univ.orleans.projet.authentification.modele;
 
+import org.hibernate.annotations.NaturalId;
+
 import javax.persistence.*;
 
 @Entity
@@ -7,13 +9,20 @@ import javax.persistence.*;
 public class Role {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "role_id")
     private int roleId;
 
-    @Column(name = "role")
-    private String role;
+    @Enumerated(EnumType.STRING)
+    @NaturalId
+    @Column(name = "name",length = 60)
+    private RoleName name;
 
     public Role() {
+    }
+
+    public Role(RoleName name) {
+        this.name = name;
     }
 
     public int getRoleId() {
@@ -24,12 +33,11 @@ public class Role {
         this.roleId = roleId;
     }
 
-    public String getRole() {
-        return role;
+    public RoleName getName() {
+        return name;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setName(RoleName name) {
+        this.name = name;
     }
 }
-
