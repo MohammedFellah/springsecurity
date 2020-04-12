@@ -1,9 +1,0 @@
-GET http://localhost:8080/auth/
-
-###
-
-GET http://localhost:8080/auth/users
-
-###
-
-POST http://localhost:8080/auth/inscription

@@ -2,6 +2,8 @@ package fr.univ.orleans.projet.authentification.service;
 
 import fr.univ.orleans.projet.authentification.exception.UtilisateurDejàExistantException;
 import fr.univ.orleans.projet.authentification.exception.UtilisateurIntrouvableException;
+import fr.univ.orleans.projet.authentification.modele.Role;
+import fr.univ.orleans.projet.authentification.modele.RoleName;
 import fr.univ.orleans.projet.authentification.modele.User;
 import fr.univ.orleans.projet.authentification.repository.UserRepository;
 import org.apache.commons.collections4.IteratorUtils;
@@ -47,23 +49,20 @@ public class MyUserDetailsService implements UserDetailsService {
     }
 
     /**
-     * Création d'un utilisateur
-     * @param user
-     * @return
-     * @throws UtilisateurDejàExistantException
-     */
-    public User createUser(User user) throws UtilisateurDejàExistantException {
-        if (userRepository.existsById(user.getId())) {
-            throw new UtilisateurDejàExistantException();
-        }
-        return userRepository.save(user);
-    }
-    /**
      *
      * @return la liste de tous les utilisateurs
      */
-    public Collection<User> getAllUsers(){
+    public Collection<User> getAllUsers() {
         return IteratorUtils.toList(this.userRepository.findAll().iterator());
+    }
+
+    /**
+     * Rechercher un utilisateur par son login
+     * @param login
+     * @return
+     */
+    public Optional<User> rechercherUser(String login) {
+        return userRepository.findByLogin(login);
     }
 
     /**
@@ -75,14 +74,7 @@ public class MyUserDetailsService implements UserDetailsService {
         userRepository.deleteById(idUser);
     }
 
-    /**
-     * Rechercher un utilisateur par son login
-     * @param login
-     * @return
-     */
-    public Optional<User> rechercherUser(String login) {
-        return userRepository.findByLogin(login);
-    }
+
 
 
 
